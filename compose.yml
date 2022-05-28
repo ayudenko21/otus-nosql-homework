@@ -1,0 +1,26 @@
+services:
+  node-01:
+    image: couchbase
+    container_name: node-01.dev
+    ports:
+      - 8091:8091
+
+  node-02:
+    image: couchbase
+    container_name: node-02.dev
+
+  node-03:
+    image: couchbase
+    container_name: node-03.dev
+
+  node-04:
+    image: couchbase
+    container_name: node-04.dev
+
+  node-05:
+    image: couchbase
+    container_name: node-05.dev
+
+  node-06:
+    image: couchbase
+    container_name: node-06.dev
