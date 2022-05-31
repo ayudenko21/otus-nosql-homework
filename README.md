@@ -22,10 +22,9 @@
 3 сервера для кластера шардов   
 ![Реплики](/images/image7.png)
 
-Настройки кластера  
-![Шард 1](/images/image8.png)
-![Шард 2](/images/image9.png)
-![Шард 3](/images/image10.png)
+Настройки кластера
+
+![Шард 1](/images/image8.png)   
 
 Настройки remote_servers из файла /etc/clickhouse-server/config.xml
 ![Настройки](/images/image11.png)
