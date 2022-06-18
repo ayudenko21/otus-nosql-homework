@@ -9,8 +9,8 @@ docker compose up -d
 ![Запуск контейнеров](/images/image1.png)
 
 ## Создание реплицированных кластеров нод данных
-docker compose exec replica-1 mongo --host replica-1 /home/mongo/scripts/initReplicaSet1.js
-docker compose exec replica-4 mongo --host replica-4 /home/mongo/scripts/initReplicaSet2.js
+docker compose exec replica-1 mongo --host replica-1 /home/mongo/scripts/initReplicaSet1.js   
+docker compose exec replica-4 mongo --host replica-4 /home/mongo/scripts/initReplicaSet2.js   
 docker compose exec replica-7 mongo --host replica-7 /home/mongo/scripts/initReplicaSet3.js
 
 ## Создание кластера серверов конфигураций
@@ -19,7 +19,7 @@ docker compose exec config-server-1 mongo --host config-server-1 /home/mongo/scr
 
 ## Добавление шардов в mongos
 
-** Перед созданием пользователей надо добавить в mongos шарды, иначе к нему не получается подконнектиться
+Перед созданием пользователей надо добавить в mongos шарды, иначе к нему не получается подконнектиться   
 docker exec -it mongos-1 mongo --host mongos-1 /home/mongo/scripts/addShards.js
 
 ** Результат **   
@@ -27,9 +27,9 @@ docker exec -it mongos-1 mongo --host mongos-1 /home/mongo/scripts/addShards.js
 
 ## Создание пользователей для mongos
 
-docker exec -it mongos-1 mongo --host mongos-1 /home/mongo/scripts/createAdminRoleAndUser.js
-docker restart mongos-1
-docker exec -it mongos-1 mongo --host mongos-1 -u adminUser -p 111 --authenticationDatabase "admin" /home/mongo/scripts/createReaderAndWriterRolesAndUsers.js
+docker exec -it mongos-1 mongo --host mongos-1 /home/mongo/scripts/createAdminRoleAndUser.js   
+docker restart mongos-1   
+docker exec -it mongos-1 mongo --host mongos-1 -u adminUser -p 111 --authenticationDatabase "admin" /home/mongo/scripts/createReaderAndWriterRolesAndUsers.js   
 docker restart mongos-1
 
 **Результат**   
@@ -52,23 +52,23 @@ docker exec -it mongos-1 mongo --host mongos-1 -u adminUser -p 111 --authenticat
 docker exec -it mongos-1 mongo --host mongos-1 -u adminUser -p 111 --authenticationDatabase "admin" /home/mongo/scripts/shardCollection.js
 
 **Результат**   
-![Шардирование](/images/image4.png)
-![Шардирование](/images/image5.png)
+![Шардирование](/images/image4.png)   
+![Шардирование](/images/image5.png)   
 
-docker exec -it mongos-1 mongo --host mongos-1 -u readerUser -p 111 --authenticationDatabase "restaurant"
-use restaurant
+docker exec -it mongos-1 mongo --host mongos-1 -u readerUser -p 111 --authenticationDatabase "restaurant"   
+use restaurant   
 db.checks.find().count()
 
 **Результат**   
-![Результаты](/images/image6.png)
-Пока идет ребалансинг шардов метод count выводит количество записей не соответствующее действительности
-![Результаты](/images/image7.png)
+![Результаты](/images/image6.png)   
+Пока идет ребалансинг шардов метод count выводит количество записей не соответствующее действительности   
+![Результаты](/images/image7.png)   
 Но после окончания ребалансинга количество записей стало корректным
 
 **Уроним по одному инстансу из каждого реплика сета и один конфиг сервер**   
 ![Уронили инстансы](/images/image8.png)   
 В результате праймари нодами стали replica-2, replica-5, replica-8, config-server-2   
-Данные по-прежнему доступны
+Данные по-прежнему доступны   
 ![Данные](/images/image9.png)
 
 **Уроним вторую ноду первого реплика сета**   
