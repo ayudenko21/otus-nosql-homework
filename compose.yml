@@ -1,0 +1,150 @@
+services:
+  replica-1:
+    image: mongo:latest
+    container_name: replica-1
+    entrypoint:
+      - "mongod"
+      - "--config"
+      - "/home/mongo/configs/replica-1.yml"
+    volumes:
+      - ./data/db1:/home/mongo/db1
+      - ./configs/replica:/home/mongo/configs
+      - ./scripts:/home/mongo/scripts
+  replica-2:
+    image: mongo:latest
+    container_name: replica-2
+    entrypoint:
+      - "mongod"
+      - "--config"
+      - "/home/mongo/configs/replica-2.yml"
+    volumes:
+      - ./data/db2:/home/mongo/db2
+      - ./configs/replica:/home/mongo/configs
+      - ./scripts:/home/mongo/scripts
+  replica-3:
+    image: mongo:latest
+    container_name: replica-3
+    entrypoint:
+      - "mongod"
+      - "--config"
+      - "/home/mongo/configs/replica-3.yml"
+    volumes:
+      - ./data/db3:/home/mongo/db3
+      - ./configs/replica:/home/mongo/configs
+      - ./scripts:/home/mongo/scripts
+  replica-4:
+    image: mongo:latest
+    container_name: replica-4
+    entrypoint:
+      - "mongod"
+      - "--config"
+      - "/home/mongo/configs/replica-4.yml"
+    volumes:
+      - ./data/db4:/home/mongo/db4
+      - ./configs/replica:/home/mongo/configs
+      - ./scripts:/home/mongo/scripts
+  replica-5:
+    image: mongo:latest
+    container_name: replica-5
+    entrypoint:
+      - "mongod"
+      - "--config"
+      - "/home/mongo/configs/replica-5.yml"
+    volumes:
+      - ./data/db5:/home/mongo/db5
+      - ./configs/replica:/home/mongo/configs
+      - ./scripts:/home/mongo/scripts
+  replica-6:
+    image: mongo:latest
+    container_name: replica-6
+    entrypoint:
+      - "mongod"
+      - "--config"
+      - "/home/mongo/configs/replica-6.yml"
+    volumes:
+      - ./data/db6:/home/mongo/db6
+      - ./configs/replica:/home/mongo/configs
+      - ./scripts:/home/mongo/scripts
+  replica-7:
+    image: mongo:latest
+    container_name: replica-7
+    entrypoint:
+      - "mongod"
+      - "--config"
+      - "/home/mongo/configs/replica-7.yml"
+    volumes:
+      - ./data/db7:/home/mongo/db7
+      - ./configs/replica:/home/mongo/configs
+      - ./scripts:/home/mongo/scripts
+  replica-8:
+    image: mongo:latest
+    container_name: replica-8
+    entrypoint:
+      - "mongod"
+      - "--config"
+      - "/home/mongo/configs/replica-8.yml"
+    volumes:
+      - ./data/db8:/home/mongo/db8
+      - ./configs/replica:/home/mongo/configs
+      - ./scripts:/home/mongo/scripts
+  replica-9:
+    image: mongo:latest
+    container_name: replica-9
+    entrypoint:
+      - "mongod"
+      - "--config"
+      - "/home/mongo/configs/replica-9.yml"
+    volumes:
+      - ./data/db9:/home/mongo/db9
+      - ./configs/replica:/home/mongo/configs
+      - ./scripts:/home/mongo/scripts
+
+  config-server-1:
+    image: mongo:latest
+    container_name: config-server-1
+    entrypoint:
+      - "mongod"
+      - "--config"
+      - "/home/mongo/configs/config-server-1.yml"
+    volumes:
+      - ./data/dbc1:/home/mongo/dbc1
+      - ./configs/config-server:/home/mongo/configs
+      - ./scripts:/home/mongo/scripts
+  config-server-2:
+    image: mongo:latest
+    container_name: config-server-2
+    entrypoint:
+      - "mongod"
+      - "--config"
+      - "/home/mongo/configs/config-server-2.yml"
+    volumes:
+      - ./data/dbc2:/home/mongo/dbc2
+      - ./configs/config-server:/home/mongo/configs
+      - ./scripts:/home/mongo/scripts
+  config-server-3:
+    image: mongo:latest
+    container_name: config-server-3
+    entrypoint:
+      - "mongod"
+      - "--config"
+      - "/home/mongo/configs/config-server-3.yml"
+    volumes:
+      - ./data/dbc3:/home/mongo/dbc3
+      - ./configs/config-server:/home/mongo/configs
+      - ./scripts:/home/mongo/scripts
+  mongos-1:
+    image: mongo:latest
+    container_name: mongos-1
+    entrypoint:
+      - "mongos"
+      - "--config"
+      - "/home/mongo/configs/mongos-1.yml"
+    volumes:
+      - ./data/dbs1:/home/mongo/dbs1
+      - ./configs/mongos:/home/mongo/configs
+      - ./data/keys:/home/mongo/keys
+      - ./scripts:/home/mongo/scripts
+
+networks:
+  default:
+    name: mongo

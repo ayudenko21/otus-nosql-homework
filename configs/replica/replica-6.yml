@@ -1,0 +1,14 @@
+sharding:
+  clusterRole: shardsvr
+replication:
+  replSetName: ReplicaSet2
+net:
+  bindIp: replica-6
+  port : 27017
+storage:
+  dbPath: /home/mongo/db6
+systemLog:
+  destination: file
+  path: /home/mongo/db6/db6.log
+processManagement:
+  pidFilePath: /home/mongo/db6/db6.pid

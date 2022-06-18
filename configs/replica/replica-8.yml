@@ -1,0 +1,14 @@
+sharding:
+  clusterRole: shardsvr
+replication:
+  replSetName: ReplicaSet3
+net:
+  bindIp: replica-8
+  port : 27017
+storage:
+  dbPath: /home/mongo/db8
+systemLog:
+  destination: file
+  path: /home/mongo/db8/db8.log
+processManagement:
+  pidFilePath: /home/mongo/db8/db8.pid

@@ -1,0 +1,14 @@
+sharding:
+  clusterRole: shardsvr
+replication:
+  replSetName: ReplicaSet3
+net:
+  bindIp: replica-9
+  port : 27017
+storage:
+  dbPath: /home/mongo/db9
+systemLog:
+  destination: file
+  path: /home/mongo/db9/db9.log
+processManagement:
+  pidFilePath: /home/mongo/db9/db9.pid

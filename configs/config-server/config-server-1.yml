@@ -1,0 +1,14 @@
+sharding:
+  clusterRole: configsvr
+replication:
+  replSetName: ConfigServerSet
+net:
+  bindIp: config-server-1
+  port: 27017
+storage:
+  dbPath: /home/mongo/dbc1
+systemLog:
+  destination: file
+  path: /home/mongo/dbc1/dbc1.log
+processManagement:
+  pidFilePath: /home/mongo/dbc1/dbc1.pid

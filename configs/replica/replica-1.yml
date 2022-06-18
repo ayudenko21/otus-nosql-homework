@@ -1,0 +1,14 @@
+sharding:
+  clusterRole: shardsvr
+replication:
+  replSetName: ReplicaSet1
+net:
+  bindIp: replica-1
+  port: 27017
+storage:
+  dbPath: /home/mongo/db1
+systemLog:
+  destination: file
+  path: /home/mongo/db1/db1.log
+processManagement:
+  pidFilePath: /home/mongo/db1/db1.pid

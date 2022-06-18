@@ -1,0 +1,14 @@
+sharding:
+  clusterRole: shardsvr
+replication:
+  replSetName: ReplicaSet1
+net:
+  bindIp: replica-3
+  port : 27017
+storage:
+  dbPath: /home/mongo/db3
+systemLog:
+  destination: file
+  path: /home/mongo/db3/db3.log
+processManagement:
+  pidFilePath: /home/mongo/db3/db3.pid

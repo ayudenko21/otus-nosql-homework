@@ -1,0 +1,14 @@
+sharding:
+  clusterRole: shardsvr
+replication:
+  replSetName: ReplicaSet2
+net:
+  bindIp: replica-5
+  port : 27017
+storage:
+  dbPath: /home/mongo/db5
+systemLog:
+  destination: file
+  path: /home/mongo/db5/db5.log
+processManagement:
+  pidFilePath: /home/mongo/db5/db5.pid

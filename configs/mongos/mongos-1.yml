@@ -1,0 +1,13 @@
+sharding:
+  configDB: ConfigServerSet/config-server-1:27017, config-server-2:27017, config-server-3:27017
+net:
+  bindIp: mongos-1
+  port: 27017
+systemLog:
+  destination: file
+  path: /home/mongo/dbs1/dbs1.log
+processManagement:
+  pidFilePath: /home/mongo/dbs1/dbs1.pid
+security:
+  keyFile: /home/mongo/keys/mongo_key_file
+  transitionToAuth: true
