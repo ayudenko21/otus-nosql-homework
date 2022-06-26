@@ -6,7 +6,7 @@
 ![Старт minikube](/images/image1.png)
 
 2. Запускаем сервис cassandra состоящий из 3 под   
-`kubectl apply -f cassandra-service.yaml`
+`kubectl apply -f cassandra-service.yaml`   
 `kubectl apply -f cassandra-statefulset.yaml`
 ![Старт k8s](/images/image2.png)
 
