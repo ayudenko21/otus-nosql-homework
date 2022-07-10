@@ -129,7 +129,6 @@ fn main() {
     );
     print_divider();
 
-
     let json: Vec<Restaurant> = serde_json::from_str(&data).unwrap();
     let mut records: Vec<String> = Vec::new();
     for rec in json {
@@ -140,8 +139,9 @@ fn main() {
         String::from("Сохраняем отдельные записи как строки в sorted set"),
         &data,
         |_data: String| {
-            for index in 0..RECORDS_NUMBER {
-                let _: () = conn.zadd("restaurant_sorted_set", index as isize, &records[index as usize]).unwrap();
+            for index in 0..10 {
+                let _: () = conn.zadd("restaurant_sorted_set", &records[index as usize], 1).unwrap();
+                println!("{}", records[index as usize]);
             }
         }
     );
@@ -150,7 +150,7 @@ fn main() {
         String::from("Читаем отдельные записи из list"),
         || -> Vec<String> {
             let mut results :Vec<String> = Vec::new();
-            for index in 0..RECORDS_NUMBER {
+            for index in 0..10 {
                 let bulk = conn.zrange("restaurant_sorted_set", index as isize, index as isize).unwrap();
                 if let Value::Bulk(val) = bulk {
                     if val.len() > 0 {
@@ -160,10 +160,9 @@ fn main() {
                     }
                 }
             }
+            println!("{:?}", results);
             results
         } 
     );
     print_divider();
 }
-
-
