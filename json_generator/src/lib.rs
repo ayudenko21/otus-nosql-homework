@@ -50,12 +50,12 @@ pub fn read_json_from_file() -> Vec<Restaurant> {
     json_data
 }
 
-pub fn get_current_micros() -> u128 {
+pub fn get_current_millis() -> u128 {
     let start = SystemTime::now();
     let since_the_epoch = start
         .duration_since(UNIX_EPOCH)
         .unwrap();
-    since_the_epoch.as_micros()
+    since_the_epoch.as_millis()
 }
 
 pub fn print_divider() {
@@ -69,7 +69,7 @@ pub fn save_to_redis<F: FnMut(String)>(description: String, data: &str, mut acti
     action(data.to_owned());
     let end = get_current_millis();
     let delta = end-start;
-    let rate = RECORDS_NUMBER / delta * 1000;
+    let rate = RECORDS_NUMBER as f64 / delta as f64 * 1000 as f64;
     println!("{}{}{}", "Сохранение заняло ", delta, " миллисекунд");
     println!("{}{}{}", "Средняя скорось записи: ", rate, " операций в секунду")
 }
@@ -77,11 +77,11 @@ pub fn save_to_redis<F: FnMut(String)>(description: String, data: &str, mut acti
 pub fn read_from_redis<F, T>(description: String, mut action: F) -> T
     where F: FnMut() -> T {
     println!("{}", description);
-    let start = get_current_micros();
+    let start = get_current_millis();
     let result = action();
-    let end = get_current_micros();
+    let end = get_current_millis();
     let delta = end-start;
-    let rate = RECORDS_NUMBER / delta * 1000;
+    let rate = RECORDS_NUMBER as f64 / delta as f64 * 1000 as f64;
     println!("{}{}{}", "Чтение заняло ", delta , " миллисекунд");
     println!("{}{}{}", "Средняя скорость чтения: ", rate, " операций в секунду");
     result
