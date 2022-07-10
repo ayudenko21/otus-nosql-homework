@@ -69,9 +69,9 @@ pub fn save_to_redis<F: FnMut(String)>(description: String, data: &str, ops: i32
     action(data.to_owned());
     let end = get_current_millis();
     let delta = end-start;
-    let rate = RECORDS_NUMBER as f64 / delta as f64 * 1000 as f64;
-    println!("{}{}{}", "Сохранение заняло ", delta, " миллисекунд");
-    println!("{}{}{}", "Средняя скорось записи: ", rate, " операций в секунду")
+    let rate = RECORDS_NUMBER as f64 / delta as f64 * 1000_f64;
+    println!("{}{:.2}{}", "Сохранение заняло ", delta as f64 / 1000_f64, " секунд");
+    println!("{}{:.2}{}", "Средняя скорось записи: ", rate, " операций в секунду")
 }
 
 pub fn read_from_redis<F, T>(description: String, ops: i32, mut action: F) -> T
@@ -81,8 +81,8 @@ pub fn read_from_redis<F, T>(description: String, ops: i32, mut action: F) -> T
     let result = action();
     let end = get_current_millis();
     let delta = end-start;
-    let rate = RECORDS_NUMBER as f64 / delta as f64 * 1000 as f64;
-    println!("{}{}{}", "Чтение заняло ", delta , " миллисекунд");
-    println!("{}{}{}", "Средняя скорость чтения: ", rate, " операций в секунду");
+    let rate = RECORDS_NUMBER as f64 / delta as f64 * 1000_f64;
+    println!("{}{:.2}{}", "Чтение заняло ", delta as f64 / 1000_f64, " секунд");
+    println!("{}{:.2}{}", "Средняя скорость чтения: ", rate, " операций в секунду");
     result
 }
