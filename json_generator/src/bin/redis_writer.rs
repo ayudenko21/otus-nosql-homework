@@ -105,7 +105,7 @@ fn main() {
         &data,
         |_data: String| {
             for index in 0..RECORDS_NUMBER {
-                let _: () = conn.zadd("restaurant", index as isize, &records[index as usize]).unwrap();
+                let _: () = conn.lpush("restaurant", &records[index as usize]).unwrap();
             }
         }
     );
@@ -129,6 +129,41 @@ fn main() {
     );
     print_divider();
 
+
+    let json: Vec<Restaurant> = serde_json::from_str(&data).unwrap();
+    let mut records: Vec<String> = Vec::new();
+    for rec in json {
+        let r = serde_json::to_string(&rec).unwrap();
+        records.push(r);
+    }
+    save_to_redis(
+        String::from("Сохраняем отдельные записи как строки в sorted set"),
+        &data,
+        |_data: String| {
+            for index in 0..RECORDS_NUMBER {
+                let _: () = conn.zadd("restaurant", index as isize, &records[index as usize]).unwrap();
+            }
+        }
+    );
+
+    read_from_redis(
+        String::from("Читаем отдельные записи из list"),
+        || -> Vec<String> {
+            let mut results :Vec<String> = Vec::new();
+            for index in 0..RECORDS_NUMBER {
+                let bulk = conn.zrange("restaurant_list", index as isize, index as isize).unwrap();
+                if let Value::Bulk(val) = bulk {
+                    if val.len() > 0 {
+                        if let Value::Data(value) = &(val[0]) {
+                            results.push(String::from_utf8(value.to_owned()).unwrap());
+                        }
+                    }
+                }
+            }
+            results
+        } 
+    );
+    print_divider();
 }
 
 
