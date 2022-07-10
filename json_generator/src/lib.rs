@@ -65,10 +65,13 @@ pub fn print_divider() {
 
 pub fn save_to_redis<F: FnMut(String)>(description: String, data: &str, mut action: F) {
     println!("{}", description);
-    let start = get_current_micros();
+    let start = get_current_millis();
     action(data.to_owned());
-    let end = get_current_micros();
-    println!("{}{}{}", "Сохранение заняло ", end-start, " микросекунд");
+    let end = get_current_millis();
+    let delta = end-start;
+    let rate = RECORDS_NUMBER / delta * 1000;
+    println!("{}{}{}", "Сохранение заняло ", delta, " миллисекунд");
+    println!("{}{}{}", "Средняя скорось записи: ", rate, " операций в секунду")
 }
 
 pub fn read_from_redis<F, T>(description: String, mut action: F) -> T
@@ -77,6 +80,9 @@ pub fn read_from_redis<F, T>(description: String, mut action: F) -> T
     let start = get_current_micros();
     let result = action();
     let end = get_current_micros();
-    println!("{}{}{}", "Чтение заняло ", end-start , " микросекунд");
+    let delta = end-start;
+    let rate = RECORDS_NUMBER / delta * 1000;
+    println!("{}{}{}", "Чтение заняло ", delta , " миллисекунд");
+    println!("{}{}{}", "Средняя скорость чтения: ", rate, " операций в секунду");
     result
 }
