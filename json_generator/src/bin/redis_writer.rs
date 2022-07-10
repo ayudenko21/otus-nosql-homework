@@ -105,7 +105,7 @@ fn main() {
         &data,
         |_data: String| {
             for index in 0..RECORDS_NUMBER {
-                let _: () = conn.lpush("restaurant", &records[index as usize]).unwrap();
+                let _: () = conn.lpush("restaurant_list", &records[index as usize]).unwrap();
             }
         }
     );
@@ -141,7 +141,7 @@ fn main() {
         &data,
         |_data: String| {
             for index in 0..RECORDS_NUMBER {
-                let _: () = conn.zadd("restaurant", index as isize, &records[index as usize]).unwrap();
+                let _: () = conn.zadd("restaurant_sorted_set", index as isize, &records[index as usize]).unwrap();
             }
         }
     );
@@ -151,7 +151,7 @@ fn main() {
         || -> Vec<String> {
             let mut results :Vec<String> = Vec::new();
             for index in 0..RECORDS_NUMBER {
-                let bulk = conn.zrange("restaurant_list", index as isize, index as isize).unwrap();
+                let bulk = conn.zrange("restaurant_sorted_set", index as isize, index as isize).unwrap();
                 if let Value::Bulk(val) = bulk {
                     if val.len() > 0 {
                         if let Value::Data(value) = &(val[0]) {
