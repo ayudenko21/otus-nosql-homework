@@ -24,12 +24,14 @@ fn main() {
     save_to_redis(
         String::from("Сохраняем весь json как строку под ключом 'json'"),
         &data,
+        1,
         |data: String| {
             let _: () = conn.set("json", &data).unwrap();
         }
     );
     read_from_redis(
         String::from("Читаем json из redis"),
+        1, 
         || -> String {
             conn.get("json").unwrap()
         }
@@ -45,6 +47,7 @@ fn main() {
     save_to_redis(
         String::from("Сохраняем отдельные записи как строки, где ключ - индекс массива json"),
         &data,
+        RECORDS_NUMBER,
         |_data: String| {
             for index in 0..records.len() {
                 let _: () = conn.set(index, &records[index]).unwrap();
@@ -53,6 +56,7 @@ fn main() {
     );
     read_from_redis(
         String::from("Читаем отдельные записи как строки, где ключ - индекс массива json"),
+        RECORDS_NUMBER,
         || -> Vec<String> {
             let mut results :Vec<String> = Vec::new();
             for index in 0..RECORDS_NUMBER {
@@ -67,8 +71,9 @@ fn main() {
     save_to_redis(
         String::from("Сохраняем отдельные записи как хеши, где ключ - индекс массива json, а ключи хеша - названия полей в структуре"),
         &data,
+        RECORDS_NUMBER,
         |_data: String| {
-            for index in 0..10 {
+            for index in 0..RECORDS_NUMBER {
                 let _: () = conn.hset(format!("{}_{}","hash", index.to_string()), "table_no", &records[index as usize].table_no.to_string()).unwrap();
                 let _: () = conn.hset(format!("{}_{}","hash", index.to_string()), "waiter", &records[index as usize].waiter).unwrap();
                 let _: () = conn.hset(format!("{}_{}","hash", index.to_string()), "check_amount", &records[index as usize].check_amount).unwrap();
@@ -78,6 +83,7 @@ fn main() {
     );
     read_from_redis(
         String::from("Читаем отдельные записи как хеши, где ключ - индекс массива json"),
+        RECORDS_NUMBER,
         || -> Vec<Restaurant> {
             let mut results :Vec<Restaurant> = Vec::new();
             for index in 0..10 {
@@ -103,6 +109,7 @@ fn main() {
     save_to_redis(
         String::from("Сохраняем отдельные записи как строки в list"),
         &data,
+        RECORDS_NUMBER,
         |_data: String| {
             for index in 0..RECORDS_NUMBER {
                 let _: () = conn.lpush("restaurant_list", &records[index as usize]).unwrap();
@@ -112,6 +119,7 @@ fn main() {
 
     read_from_redis(
         String::from("Читаем отдельные записи из list"),
+        RECORDS_NUMBER,
         || -> Vec<String> {
             let mut results :Vec<String> = Vec::new();
             for index in 0..RECORDS_NUMBER {
@@ -138,6 +146,7 @@ fn main() {
     save_to_redis(
         String::from("Сохраняем отдельные записи как строки в sorted set"),
         &data,
+        RECORDS_NUMBER,
         |_data: String| {
             for index in 0..10 {
                 let _: () = conn.zadd("restaurant_sorted_set", &records[index as usize], 1).unwrap();
@@ -147,6 +156,7 @@ fn main() {
 
     read_from_redis(
         String::from("Читаем отдельные записи из list"),
+        RECORDS_NUMBER,
         || -> Vec<String> {
             let mut results :Vec<String> = Vec::new();
             for index in 0..10 {

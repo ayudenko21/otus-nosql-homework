@@ -63,7 +63,7 @@ pub fn print_divider() {
     println!("{}", "");
 }
 
-pub fn save_to_redis<F: FnMut(String)>(description: String, data: &str, mut action: F) {
+pub fn save_to_redis<F: FnMut(String)>(description: String, data: &str, ops: i32, mut action: F) {
     println!("{}", description);
     let start = get_current_millis();
     action(data.to_owned());
@@ -74,7 +74,7 @@ pub fn save_to_redis<F: FnMut(String)>(description: String, data: &str, mut acti
     println!("{}{}{}", "Средняя скорось записи: ", rate, " операций в секунду")
 }
 
-pub fn read_from_redis<F, T>(description: String, mut action: F) -> T
+pub fn read_from_redis<F, T>(description: String, ops: i32, mut action: F) -> T
     where F: FnMut() -> T {
     println!("{}", description);
     let start = get_current_millis();
