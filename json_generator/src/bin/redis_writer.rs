@@ -16,7 +16,7 @@ fn main() {
     let json_data = read_json_from_file(); 
     print_divider();
 
-    let client = redis::Client::open("redis://redis-otus:6379").unwrap();
+    let client = redis::Client::open("redis://localhost:6379").unwrap();
     //let client = redis::Client::open("redis://127.0.0.1:6380").unwrap();
     let mut conn = client.get_connection().unwrap();
     let data = serde_json::to_string(&json_data).unwrap();
@@ -86,7 +86,7 @@ fn main() {
         RECORDS_NUMBER,
         || -> Vec<Restaurant> {
             let mut results :Vec<Restaurant> = Vec::new();
-            for index in 0..10 {
+            for index in 0..RECORDS_NUMBER {
                 let restaurant = Restaurant {
                     table_no: conn.hget(format!("{}_{}", "hash", index.to_string()), "table_no").unwrap(),
                     waiter: conn.hget(format!("{}_{}", "hash", index.to_string()), "waiter").unwrap(),
@@ -148,18 +148,18 @@ fn main() {
         &data,
         RECORDS_NUMBER,
         |_data: String| {
-            for index in 0..10 {
+            for index in 0..RECORDS_NUMBER {
                 let _: () = conn.zadd("restaurant_sorted_set", &records[index as usize], 1).unwrap();
             }
         }
     );
 
     read_from_redis(
-        String::from("Читаем отдельные записи из list"),
+        String::from("Читаем отдельные записи из sorted set"),
         RECORDS_NUMBER,
         || -> Vec<String> {
             let mut results :Vec<String> = Vec::new();
-            for index in 0..10 {
+            for index in 0..RECORDS_NUMBER {
                 let bulk = conn.zrange("restaurant_sorted_set", index as isize, index as isize).unwrap();
                 if let Value::Bulk(val) = bulk {
                     if val.len() > 0 {
