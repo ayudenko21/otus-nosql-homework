@@ -6,7 +6,8 @@ use json_generator::{
     read_json_from_file,
     print_divider,
     save_to_redis,
-    read_from_redis
+    read_from_redis,
+    get_connection
 };
 
 fn main() {
@@ -16,8 +17,8 @@ fn main() {
     let json_data = read_json_from_file();
     print_divider();
 
-    let client = redis::Client::open("redis://localhost:6379").unwrap();
-    let mut conn = client.get_connection().unwrap();
+    let mut conn = get_connection();
+
     let data = serde_json::to_string(&json_data).unwrap();
 
     save_to_redis(

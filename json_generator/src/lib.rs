@@ -3,6 +3,7 @@ use std::io::{Write};
 use std::time::{SystemTime, UNIX_EPOCH};
 use std::fs::File;
 use std::io::{BufReader, BufRead};
+use redis::{Connection, Value};
 
 pub const RECORDS_NUMBER: i32 = 240000;
 
@@ -64,9 +65,11 @@ pub fn print_divider() {
 }
 
 pub fn save_to_redis<F: FnMut(String)>(description: String, data: &str, ops: i32, mut action: F) {
+    let mut conn = get_connection(); 
     println!("{}", description);
     let mut deltas = [0; 10];
     for i in 0..10 {
+        redis::cmd("FLUSHDB").query::<Value>(&mut conn).unwrap();
         let start = get_current_millis();
         action(data.to_owned());
         let end = get_current_millis();
@@ -99,4 +102,9 @@ pub fn read_from_redis<F: FnMut()>(description: String, ops: i32, mut action: F)
     let rate = ops as f64 / delta as f64 * 1000_f64;
     println!("{}{:.2}{}", "Чтение заняло ", delta as f64 / 1000_f64, " секунд");
     println!("{}{:.2}{}", "Средняя скорость чтения: ", rate, " операций в секунду");
+}
+
+pub fn get_connection() -> Connection {
+    let client = redis::Client::open("redis://localhost:6379").unwrap();
+    client.get_connection().unwrap()
 }
