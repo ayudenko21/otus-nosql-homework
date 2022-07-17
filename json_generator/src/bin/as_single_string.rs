@@ -1,6 +1,6 @@
 extern crate redis;
 
-use redis::Commands;
+use redis::{Commands, Value};
 
 use json_generator::{
     read_json_from_file,
@@ -10,6 +10,9 @@ use json_generator::{
 };
 
 fn main() {
+    println!("STRING");
+    print_divider();
+    
     let json_data = read_json_from_file();
     print_divider();
 
@@ -18,19 +21,22 @@ fn main() {
     let data = serde_json::to_string(&json_data).unwrap();
 
     save_to_redis(
-        String::from("Сохраняем весь json как строку под ключом 'json'"),
+        String::from("Сохранение всего json как строки под ключом 'json' без использования pipeline"),
         &data,
         1,
         |data: String| {
             let _: () = conn.set("json", &data).unwrap();
         }
     );
+    print_divider();
+
     read_from_redis(
-        String::from("Читаем json из redis"),
+        String::from("Читение всего json без использования pipeline"),
         1,
-        || -> String {
-            conn.get("json").unwrap()
+        || {
+            conn.get::<&str, Value>("json").unwrap();
         }
     );
     print_divider();
+
 }

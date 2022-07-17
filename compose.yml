@@ -1,0 +1,33 @@
+services:
+#  app:
+#    build:
+#      context: .
+#    container_name: app
+#    volumes:
+#      - ./:/app
+#    deploy:
+#      resources:
+#        limits:
+#          cpus: '2'
+#          memory: 4G        
+#        reservations:
+#         cpus: '2'
+#          memory: 4G
+            
+  redis-otus:
+    image: redis:latest
+    container_name: redis-otus
+    ports:
+      - 6380:6379
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4096M
+        reservations:
+          cpus: '2'
+          memory: 4096M
+
+networks:
+  default:
+    name: default-otus

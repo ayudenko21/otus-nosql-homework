@@ -65,24 +65,38 @@ pub fn print_divider() {
 
 pub fn save_to_redis<F: FnMut(String)>(description: String, data: &str, ops: i32, mut action: F) {
     println!("{}", description);
-    let start = get_current_millis();
-    action(data.to_owned());
-    let end = get_current_millis();
-    let delta = end-start;
+    let mut deltas = [0; 10];
+    for i in 0..10 {
+        let start = get_current_millis();
+        action(data.to_owned());
+        let end = get_current_millis();
+        deltas[i] = end-start;
+    }
+    let mut delta_sum = 0;
+    for i in 0..deltas.len() {
+        delta_sum += deltas[i];
+    }
+    let delta = delta_sum as f64 / deltas.len() as f64;
     let rate = ops as f64 / delta as f64 * 1000_f64;
     println!("{}{:.2}{}", "Сохранение заняло ", delta as f64 / 1000_f64, " секунд");
     println!("{}{:.2}{}", "Средняя скорость записи: ", rate, " операций в секунду");
 }
 
-pub fn read_from_redis<F, T>(description: String, ops: i32, mut action: F) -> T
-    where F: FnMut() -> T {
+pub fn read_from_redis<F: FnMut()>(description: String, ops: i32, mut action: F) {
     println!("{}", description);
-    let start = get_current_millis();
-    let result = action();
-    let end = get_current_millis();
-    let delta = end-start;
+    let mut deltas = [0; 10];
+    for i in 0..deltas.len() {
+        let start = get_current_millis();
+        action();
+        let end = get_current_millis();
+        deltas[i] = end-start;
+    }
+    let mut delta_sum = 0;
+    for i in 0..deltas.len() {
+        delta_sum += deltas[i];
+    }
+    let delta = delta_sum as f64 / deltas.len() as f64;
     let rate = ops as f64 / delta as f64 * 1000_f64;
     println!("{}{:.2}{}", "Чтение заняло ", delta as f64 / 1000_f64, " секунд");
     println!("{}{:.2}{}", "Средняя скорость чтения: ", rate, " операций в секунду");
-    result
 }

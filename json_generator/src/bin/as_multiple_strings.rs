@@ -1,6 +1,6 @@
 extern crate redis;
 
-use redis::Commands;
+use redis::{Commands, Value};
 
 use json_generator::{
     Restaurant,
@@ -12,11 +12,15 @@ use json_generator::{
 };
 
 fn main() {
+    println!("STRINGS");
+    print_divider();
+    
     let json_data = read_json_from_file();
     print_divider();
 
     let client = redis::Client::open("redis://localhost:6379").unwrap();
     let mut conn = client.get_connection().unwrap();
+
     let data = serde_json::to_string(&json_data).unwrap();
 
     let json: Vec<Restaurant> = serde_json::from_str(&data).unwrap();
@@ -25,8 +29,9 @@ fn main() {
         let r = serde_json::to_string(&rec).unwrap();
         records.push(r);
     }
+
     save_to_redis(
-        String::from("Сохраняем отдельные записи как строки, где ключ - индекс массива json"),
+        String::from("Сохранение отдельных записей как строк, где ключ - индекс массива json без использования pipeline"),
         &data,
         RECORDS_NUMBER,
         |_data: String| {
@@ -35,16 +40,44 @@ fn main() {
             }
         }
     );
-    read_from_redis(
-        String::from("Читаем отдельные записи как строки, где ключ - индекс массива json"),
+    
+    save_to_redis(
+        String::from("Сохранение отдельных записей как строк, где ключ - индекс массива json с использованием pipeline"),
+        &data,
         RECORDS_NUMBER,
-        || -> Vec<String> {
+        |_data: String| {
+            let mut pipeline = redis::pipe();
+            for index in 0..records.len() {
+                pipeline.set(index, &records[index]);
+            }
+            pipeline.query::<Value>(&mut conn).unwrap(); 
+        }
+    );
+    print_divider();
+
+    read_from_redis(
+        String::from("Чтение отдельных записей как строк, где ключ - индекс массива json без использования pipeline"),
+        RECORDS_NUMBER,
+        || {
             let mut results: Vec<String> = Vec::new();
             for index in 0..RECORDS_NUMBER {
                 results.push(conn.get(index.to_string()).unwrap());
             };
-            results
         }
     );
     print_divider();
+    
+    read_from_redis(
+        String::from("Чтение отдельных записей как строк, где ключ - индекс массива json без использования pipeline"),
+        RECORDS_NUMBER,
+        || {
+            let mut pipeline = redis::pipe();
+            for index in 0..RECORDS_NUMBER {
+                pipeline.get(index.to_string());
+            };
+            pipeline.query::<Value>(&mut conn).unwrap();
+        }
+    );
+    print_divider();
+
 }

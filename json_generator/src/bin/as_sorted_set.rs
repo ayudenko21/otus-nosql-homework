@@ -12,6 +12,8 @@ use json_generator::{
 };
 
 fn main() {
+    println!("SORTED SET");
+    print_divider();
 
     let json_data = read_json_from_file();
     print_divider();
@@ -27,7 +29,7 @@ fn main() {
         records.push(r);
     }
     save_to_redis(
-        String::from("Сохраняем отдельные записи как строки в sorted set"),
+        String::from("Сохранение отдельных записей как строк в sorted set без использования pipeline"),
         &data,
         RECORDS_NUMBER,
         |_data: String| {
@@ -36,24 +38,44 @@ fn main() {
             }
         }
     );
+    print_divider();
 
-    read_from_redis(
-        String::from("Читаем отдельные записи из sorted set"),
+    save_to_redis(
+        String::from("Сохранение отдельных записей как строк в sorted set с использованием pipeline"),
+        &data,
         RECORDS_NUMBER,
-        || -> Vec<String> {
-            let mut results :Vec<String> = Vec::new();
+        |_data: String| {
+            let mut pipeline = redis::pipe();
             for index in 0..RECORDS_NUMBER {
-                let bulk = conn.zrange("restaurant_sorted_set", index as isize, index as isize).unwrap();
-                if let Value::Bulk(val) = bulk {
-                    if val.len() > 0 {
-                        if let Value::Data(value) = &(val[0]) {
-                            results.push(String::from_utf8(value.to_owned()).unwrap());
-                        }
-                    }
-                }
+                pipeline.zadd("restaurant_sorted_set", &records[index as usize], 1);
             }
-            results
+            pipeline.query::<Value>(&mut conn).unwrap();
         }
     );
     print_divider();
+
+    read_from_redis(
+        String::from("Читаем отдельные записи из sorted set без использования pipeline"),
+        RECORDS_NUMBER,
+        || {
+            for index in 0..RECORDS_NUMBER {
+                conn.zrange::<&str, Value>("restaurant_sorted_set", index as isize, index as isize).unwrap();
+            }
+        }
+    );
+    print_divider();
+    
+    read_from_redis(
+        String::from("Читаем отдельные записи из sorted set с использованием pipeline"),
+        RECORDS_NUMBER,
+        || {
+            let mut pipeline = redis::pipe();
+            for index in 0..RECORDS_NUMBER {
+                pipeline.zrange("restaurant_sorted_set", index as isize, index as isize);
+            }
+            pipeline.query::<Value>(&mut conn).unwrap();
+        }
+    );
+    print_divider();
+    
 }
