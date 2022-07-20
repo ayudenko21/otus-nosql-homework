@@ -68,7 +68,7 @@ fn main() {
     print_divider();
     
     read_from_redis(
-        String::from("Чтение отдельных записей как строк, где ключ - индекс массива json без использования pipeline"),
+        String::from("Чтение отдельных записей как строк, где ключ - индекс массива json с использованием pipeline"),
         RECORDS_NUMBER,
         || {
             let mut pipeline = redis::pipe();
